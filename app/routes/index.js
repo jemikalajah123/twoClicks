@@ -1,5 +1,7 @@
 const express = require('express')
-const router = express.Router();
+const router = express.Router()
+const excelController = require("../controllers/indexController");
+const fileValidator = require("../middlewares/fileValidator");
 
 
 router.get('/', (req, res) => {
@@ -8,6 +10,9 @@ router.get('/', (req, res) => {
         message: 'Welcome to Two Clicks'
     });
 })
+
+router.post("/upload", fileValidator.single("file"), excelController.upload)
+router.get("/requests/:requesttype", excelController.getRequests)
 
 
 

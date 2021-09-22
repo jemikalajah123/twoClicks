@@ -6,6 +6,8 @@ const cors = require('cors');
 
 const app = express();
 
+global.__basedir = __dirname + "/..";
+
 app.use(cors({
     origin:['*', '']
 }));
