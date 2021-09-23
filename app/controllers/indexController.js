@@ -35,8 +35,7 @@ xlsxFile('./code Challende Trade Requests Template.xlsx', { sheet: 'IPHONES' }).
         break;
   
       case "iPhone 8":
-        phoneName = row[0]
-        rows.shift()
+        setTitle(row[0])
         break;
 
       case "iPhone 7 Plus":
@@ -119,9 +118,7 @@ xlsxFile('./code Challende Trade Requests Template.xlsx', { sheet: 'IPHONES' }).
  try{
 
   Buyrequest.insertMany(buyRequests)
-  console.log("object");
   Sellrequest.insertMany(sellRequests)
-  console.log(sellRequests.length);
 
   return res.status(200).json({
     responseCode: "00",

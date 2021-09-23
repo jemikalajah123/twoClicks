@@ -1,4 +1,5 @@
 const express = require('express');
+const {} = require("dotenv/config");
 const connectDB = require('./config/database');
 const routes = require("./app/routes");
 const mongoose = require("mongoose");
@@ -36,6 +37,6 @@ app.use((error, req, res, next) => {
     });
   });
 
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 8081;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

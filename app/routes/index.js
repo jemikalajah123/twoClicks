@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const excelController = require("../controllers/indexController");
-const fileValidator = require("../middlewares/fileValidator");
+const excelController = require("../controllers/indexController")
 
 
 router.get('/', (req, res) => {
@@ -11,7 +10,7 @@ router.get('/', (req, res) => {
     });
 })
 
-router.post("/upload", fileValidator.single("file"), excelController.upload)
+router.post("/upload", excelController.upload)
 router.get("/requests/:requesttype", excelController.getRequests)
 
 
