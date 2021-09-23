@@ -1,55 +1,142 @@
-const buyrequest = require("../models/buyrequest")
-const sellrequest = require("../models/sellrequest")
+const Buyrequest = require("../models/buyrequest")
+const Sellrequest = require("../models/sellrequest")
 const { log } = require("../../logger")
-
-const readXlsxFile = require("read-excel-file/node");
+const xlsxFile = require('read-excel-file/node');
+ 
 
 const upload = async (req, res) => {
-  try {
-    if (req.file == undefined) {
-      return res.status(400).send("Please upload an excel file!");
+
+xlsxFile('./code Challende Trade Requests Template.xlsx', { sheet: 'IPHONES' }).then((rows) => {
+
+  let buyRequests = []
+  let sellRequests = []
+  let phoneName = ""
+
+  const checkTitle = (row) => {
+
+    switch (row[0]) {
+      case "iPhone XS Max":
+        setTitle(row[0])
+        break;
+      case "iPhone XS":
+        setTitle(row[0])
+        break;
+  
+      case "iPhone XR":
+        setTitle(row[0])
+        break;
+
+      case "iPhone X":
+        setTitle(row[0])
+        break;
+
+      case "iPhone 8 PLUS":
+        setTitle(row[0])
+        break;
+  
+      case "iPhone 8":
+        phoneName = row[0]
+        rows.shift()
+        break;
+
+      case "iPhone 7 Plus":
+        setTitle(row[0])
+        break;
+
+      case "iPhone 7":
+        setTitle(row[0])
+        break;
+
+      case "iPhone 6S Plus":
+        setTitle(row[0])
+        break;
+
+      case "iPhone 6S":
+        setTitle(row[0])
+        break;
+      case "iPhone 6 Plus":
+        setTitle(row[0])
+        break;
+        
+      case "iPhone 6":
+        setTitle(row[0])
+        break;
+
+      case "iPhone SE":
+        setTitle(row[0])
+        break;       
+    
+      default:
+        break;
+    }
+  }
+
+  const setTitle = (row) => {
+    phoneName = row
+    rows.shift()
+  }
+
+  rows.forEach((row) => {
+
+    checkTitle(row)
+
+    let buyrequest = {
+      phoneName: phoneName,
+      storageSize: row[1],
+      New: row[2],
+      A1: row[3], 
+      A2: row[4],
+      B1: row[5],
+      B2: row[6],
+      C:  row[7],
+      CB: row[8],
+      CD: row[9]
+    };
+
+    if(buyrequest.storageSize !== null){
+     buyRequests.push(buyrequest);
     }
 
-    let path =
-      __basedir + "/resources/static/assets/uploads/" + req.file.filename;
+    let sellrequest = {
+      phoneName: phoneName,
+      storageSize: row[12],
+      New: row[13],
+      A1: row[14], 
+      A2: row[15],
+      B1: row[16],
+      B2: row[17],
+      C:  row[18],
+      CB: row[19],
+      CD: row[20]
+    };
 
-    readXlsxFile(path).then((rows) => {
-      // skip header
-      rows.shift();
+    if(sellrequest.storageSize !== null){
+      sellRequests.push(sellrequest);
+    }
+    
+  });
+  
+ try{
 
-      let tutorials = [];
+  Buyrequest.insertMany(buyRequests)
+  console.log("object");
+  Sellrequest.insertMany(sellRequests)
+  console.log(sellRequests.length);
 
-      rows.forEach((row) => {
-        let tutorial = {
-          id: row[0],
-          title: row[1],
-          description: row[2],
-          published: row[3],
-        };
+  return res.status(200).json({
+    status: "successful",
+    message: "Data imported successfully"
+  })
+ }catch(error){
+  log('Server Error!', error.message, "dafault")
+  return res.status(500).json({
+    status: "failed",
+    message:  error.message || "Some error occurred while retrieving"
+  })
+ }
+})
 
-        tutorials.push(tutorial);
-      });
-
-      Tutorial.bulkCreate(tutorials)
-        .then(() => {
-          res.status(200).send({
-            message: "Uploaded the file successfully: " + req.file.originalname,
-          });
-        })
-        .catch((error) => {
-          res.status(500).send({
-            message: "Fail to import data into database!",
-            error: error.message,
-          });
-        });
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      message: "Could not upload the file: " + req.file.originalname,
-    });
-  }
-};
+}
 
 const getRequests = async (req, res) => {
   try {
@@ -62,7 +149,7 @@ const getRequests = async (req, res) => {
       sorted: {createdAt: "desc"},
     }
     if(requestType === "BuyRequests"){
-      const RequestData = await buyrequest.paginate(options)
+      const RequestData = await Buyrequest.paginate(options)
       return res.status(200).json({
         status: "successful",
         data:  RequestData,
@@ -70,7 +157,7 @@ const getRequests = async (req, res) => {
       })
     }
     else if(requestType === "SellRequests"){
-      const RequestData = await sellrequest.paginate(options)
+      const RequestData = await Sellrequest.paginate(options)
       return res.status(200).json({
         status: "successful",
         data:  RequestData,
