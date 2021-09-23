@@ -124,12 +124,14 @@ xlsxFile('./code Challende Trade Requests Template.xlsx', { sheet: 'IPHONES' }).
   console.log(sellRequests.length);
 
   return res.status(200).json({
+    responseCode: "00",
     status: "successful",
     message: "Data imported successfully"
   })
  }catch(error){
   log('Server Error!', error.message, "dafault")
   return res.status(500).json({
+    responseCode: "99",
     status: "failed",
     message:  error.message || "Some error occurred while retrieving"
   })
@@ -151,6 +153,7 @@ const getRequests = async (req, res) => {
     if(requestType === "BuyRequests"){
       const RequestData = await Buyrequest.paginate(options)
       return res.status(200).json({
+        responseCode: "00",
         status: "successful",
         data:  RequestData,
         message: "Data Sent"
@@ -159,12 +162,14 @@ const getRequests = async (req, res) => {
     else if(requestType === "SellRequests"){
       const RequestData = await Sellrequest.paginate(options)
       return res.status(200).json({
+        responseCode: "00",
         status: "successful",
         data:  RequestData,
         message: "Data Sent"
       })
     }else{
       return res.status(404).json({
+        responseCode: "01",
         status: "failed",
         data: {},
         message: "Invalid Params"
@@ -174,6 +179,7 @@ const getRequests = async (req, res) => {
   } catch (error) {
     log('Server Error!', error.message, "dafault")
     return res.status(500).json({
+      responseCode: "99",
       status: "failed",
       message:  error.message || "Some error occurred while retrieving"
     })
