@@ -6,7 +6,8 @@ const xlsxFile = require('read-excel-file/node');
 
 const upload = async (req, res) => {
 
-xlsxFile('./code Challende Trade Requests Template.xlsx', { sheet: 'IPHONES' }).then((rows) => {
+  let path =  __basedir + "Code Challende Trade Requests Template.xlsx"
+  xlsxFile(path, { sheet: 'IPHONES' }).then((rows) => {
 
   let buyRequests = []
   let sellRequests = []
@@ -133,8 +134,14 @@ xlsxFile('./code Challende Trade Requests Template.xlsx', { sheet: 'IPHONES' }).
     message:  error.message || "Some error occurred while retrieving"
   })
  }
+}).catch((error) => {
+  log('Server Error!', error.message, "dafault")
+  res.status(500).send({
+    responseCode: "99",
+    status: "failed",
+    message: error.message || "Fail to import data into database!",
+  });
 })
-
 }
 
 const getRequests = async (req, res) => {
